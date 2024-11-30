@@ -3,7 +3,12 @@ const morgan = require('morgan');
 const app = express();
 
 app.use(express.json());
-app.use(morgan('tiny'));
+
+morgan.token('body', (req) =>
+    JSON.stringify(req.body)
+);
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
 let persons = [
     { 
@@ -37,27 +42,10 @@ app.get('/api/persons', (request, response) => {
 });
 
 app.get('/info', (request, response) => {
-    let now = new Date();
-
-    let dayName = now.toLocaleDateString("en-US", { weekday: "short" });
-    let day = now.getDate();
-    let month = now.toLocaleDateString("en-US", { month: "short" });
-
-    let date = `${dayName} ${month} ${day}`;
-    let time = now.toLocaleTimeString();
-
-    let timezoneOffset = -now.getTimezoneOffset();
-    let timezoneHours = Math.floor(timezoneOffset / 60);
-    let timezoneMinutes = timezoneOffset % 60;
-    let timezone = `UTC${timezoneHours >= 0 ? "+" : ""}${timezoneHours}:${timezoneMinutes.toString().padStart(2, "0")}`;
-    
-    let options = { timeZoneName: "long", hour: "numeric" };
-    let timeZoneName = new Intl.DateTimeFormat("en-US", options).format(now);
-    timeZoneName = timeZoneName.replace(/^\d+\s?(AM|PM)?\s/, '');
-
+    let time = new Date().toString();
 
     response.send(`<p>Phonebook has info for ${persons.length} people</p>
-        <p>${date} ${time} ${timezone} (${timeZoneName})</p>`);
+        <p>${time}</p>`);
 });
 
 app.get('/api/persons/:id', (request, response) => {
