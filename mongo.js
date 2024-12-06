@@ -20,11 +20,11 @@ const connect = async () => {
     }
 }
 
+connect();
+
 if (process.argv.length === 5) {
     let name = process.argv[3]
     let number = process.argv[4]
-
-    connect()
 
     const person = new Person({
         name: name,
@@ -37,8 +37,6 @@ if (process.argv.length === 5) {
     })
 
 } else if (process.argv.length === 3) {
-    connect()
-
     Person.find({}).then(result => {
         if (result.length === 0) {
             console.log("Phonebook is empty")
